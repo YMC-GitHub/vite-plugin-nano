@@ -1,6 +1,6 @@
 {
   "name": "vite-plugin-nano",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A vite plugin library package for nano packages to compress js files in dist and do more.",
   "keywords": [
     "vite",

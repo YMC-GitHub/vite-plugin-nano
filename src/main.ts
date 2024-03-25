@@ -82,7 +82,7 @@ function ruleRegify(rules:string){
   return rules.split(",").map(v=>v.trim()).filter(v=>v).map(v=>new RegExp(`${v}$`,'i'))
 }
 
-export default (pluginOptions?: VitePluginNanoOption):any => {
+export default (pluginOptions?: VitePluginNanoOptionLike):any => {
   // cache vite config in this plugin block scop
   let viteConfig:ResolvedConfig
 
