@@ -1,0 +1,102 @@
+name: release
+on:
+  push:
+    # branches:
+    #   - main
+    tags:
+        - "[0-9]+.[0-9]+.[0-9]+"
+        - 'v*'
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  release:
+    name: release npm package
+    # if: ${{ github.repository_owner == 'ymc-github' }}
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write # allow GITHUB_TOKEN to release repo
+      packages: write # allow GITHUB_TOKEN to publish packages
+    steps:
+      - name: checkout your repository
+        uses: actions/checkout@v4
+
+      - name: Get version
+        id: get_version
+        run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
+
+      # done
+      - name: Create github Release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: README.md
+          # note you'll typically need to create a personal access token
+          # with permissions to create releases in the other repo
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # - name: Create Release 2
+      #   uses: actions/create-release@v1
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      #   with:
+      #     tag_name: ${{ github.ref }}
+      #     release_name: ${{ github.ref }}
+
+      - name: Setup PNPM
+        uses: pnpm/action-setup@v3
+        with:
+          version: ^7.0
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: "pnpm"
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Build npm Packages
+        run: pnpm run build
+
+      # done
+      - name: Publish to registry.npmjs.org
+        uses: JS-DevTools/npm-publish@v3
+        with:
+            token: ${{ secrets.NPM_TOKEN }}
+            registry: "https://registry.npmjs.org/"
+            dry-run: false
+
+      # fail
+      # - name: Publish to npm.pkg.github.com
+      #   id: publishtogh
+      #   uses: JS-DevTools/npm-publish@v3
+      #   with:
+      #       # token: ${{ secrets.GITHUB_TOKEN }}
+      #       token: ${{ secrets.GHZ_TOKEN }}
+      #       registry: "https://npm.pkg.github.com/"
+      #       dry-run: true
+      
+      # - if: steps.publishtogh.outputs.type
+      #   run: |
+      #     echo "Version changed: ${{ steps.publishtogh.outputs.old-version }} => ${{ steps.publishtogh.outputs.version }}"
+      #   shell: bash
+
+    #   - name: publish to npmjs.com
+    #     run: npm publish
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    #   - name: Create Release Pull Request or Publish
+    #     id: changesets
+    #     uses: changesets/action@v1
+    #     with:
+    #       version: pnpm run version
+    #       publish: pnpm exec changeset publish
+    #       commit: "[ci] release"
+    #       title: "[ci] release"
+    #     env:
+    #       GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    #       NPM_TOKEN: ${{ secrets.NPM_TOKEN }}

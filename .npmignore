@@ -1,0 +1,10 @@
+src
+node_modules/
+.github
+package-lock.json
+pnpm-lock.yaml
+tsconfig.json
+.vscode
+.npmrc
+.gitignore
+tsup.config.ts

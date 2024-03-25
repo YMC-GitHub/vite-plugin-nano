@@ -1,0 +1,45 @@
+{
+  "name": "vite-plugin-nano",
+  "version": "1.0.0",
+  "description": "A vite plugin library package for nano packages to compress js files in dist and do more.",
+  "keywords": [
+    "vite",
+    "node",
+    "plugin",
+    "js-minifier-terser"
+  ],
+  "author": "yemiancheng <ymc.github@gmail.com> (https://github.com/ymc-github)",
+  "license": "MIT",
+  "private": false,
+  "main": "./dist/main.cjs",
+  "module": "./dist/main.mjs",
+  "types": "./dist/main.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/main.d.ts",
+      "import": "./dist/main.mjs",
+      "require": "./dist/main.cjs"
+    }
+  },
+  "scripts": {
+    "build": "tsup"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ymc-github/vite-plugin-nano.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ymc-github/vite-plugin-nano/issues"
+  },
+  "homepage": "https://github.com/ymc-github/vite-plugin-nano#readme",
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "rollup": "^4.13.0",
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.3",
+    "vite": "^5.2.6"
+  },
+  "dependencies": {
+    "terser": "^5.29.2"
+  }
+}
