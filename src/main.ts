@@ -1,13 +1,13 @@
 
 import { minify } from "terser";
 
-import { PluginOption, Plugin } from 'vite'
+// import { PluginOption, Plugin } from 'vite'
 import type { ResolvedConfig } from 'vite'
 // pnpm add rollup -D
 import type { NormalizedOutputOptions, OutputBundle } from 'rollup'
 
-import path from "path"
-import fs from "fs"
+import path from "node:path"
+import fs from "node:fs"
 
 import {extname,addBannerHead, confOption as likeOption,addLabelInfrontOfExt} from "./nano-shared"
 
@@ -95,6 +95,7 @@ export default (pluginOptions?: VitePluginNanoOptionLike):any => {
     },
 
     // writeBundle,closeBundle,
+    // @ts-ignore
     async closeBundle(_options: NormalizedOutputOptions, outBundle:  OutputBundle) {
       try {
         const pluginConfig:VitePluginNanoOption = likeOption(pluginOptions,builtinVitePluginNanoOption)
@@ -118,9 +119,9 @@ export default (pluginOptions?: VitePluginNanoOptionLike):any => {
         // let rulesreg = [new RegExp(rule)] 
         // rulesreg = ['.js',".cjs"].map(v=>new RegExp(`${v}$`,'ig'))
         // rulesreg = rule.split(",").map(v=>v.trim()).filter(v=>v).map(v=>new RegExp(`${v}$`,'i'))
-        // console.log(`[mini-dist] files length before filter ext:`,files.length)
+        console.log(`[nano] files length before filter ext:`,files.length)
         if(rule){
-          let rulesreg = ruleRegify(skipRule)
+          let rulesreg = ruleRegify(rule)
           files = files.filter(location => rulesreg.some(rule=>rule.test(location)))
         }
         if(skipRule){
@@ -131,7 +132,7 @@ export default (pluginOptions?: VitePluginNanoOptionLike):any => {
         // ['.js','.cjs'].map()
         let filex = ignoreMatchedFilesPerf(files.map(name=>{return {name}}),{label:pluginConfig.label})
         // console.log(filex)
-        // console.log(`[mini-dist] files length after filter ext:`,filex.length)
+        console.log(`[nano] files length after filter ext:`,filex.length)
 
         let task = filex.map(file=>{
           return async ()=>{
